@@ -1,0 +1,6 @@
+EasyProcess==0.3
+entrypoint2==0.2.3
+jeepney==0.4.3
+mss==6.1.0
+Pillow==8.0.1
+pyscreenshot==2.2
