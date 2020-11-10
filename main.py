@@ -1,13 +1,26 @@
 import pyscreenshot as ImageGrab
 import RadioControlProtocolPy.rc_lib as rc_lib
 import socket
+import time
+
+image_size = (7, 7)
+roi = (325, 159, 325 + 1285, 159 + 882)  # X1,Y1,X2,Y2
+
 
 def get_color():
-    im = ImageGrab.grab(bbox=(325, 159, 325 + 1285, 159 + 882))  # X1,Y1,X2,Y2
+    im = ImageGrab.grab(bbox=roi) 
 
-    color = im.resize((1,1)).getpixel((0,0))
+    start = time.time()
 
-    return color
+    resized = im.resize(image_size)
+
+    colors = resized.getcolors()
+
+    colors.sort(reverse=True, key=lambda x: x[0]) 
+
+    print(time.time() - start)
+
+    return colors[0][1]
 
 def get_package(color):
     pkg = rc_lib.Package(1024, 4)
@@ -27,12 +40,10 @@ def send_package(data, ip, port):
 
 def main():
     last_color = (0, 0, 0)
-    alpha = 0.5
+    alpha = 0.3
 
     while True:
         color = get_color()
-
-        print(color)
 
         filtered_color = (int(color[0] * alpha + last_color[0] * (1-alpha)),
                         int(color[1] * alpha + last_color[1] * (1-alpha)),
